@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="sunsetwx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+
+	<!-- SunsetWx Channel Types -->
+
+	<channel-type id="channel-type-getquality" advanced="true">
+		<item-type>Switch</item-type>
+		<label>Get Quality</label>
+		<description>Fetch quality from service</description>
+	</channel-type>
+
+	<channel-type id="channel-type-quality">
+		<item-type>String</item-type>
+		<label>Quality</label>
+		<description>Textual representation of quality</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="channel-type-quality-percent">
+		<item-type>Number</item-type>
+		<label>Quality Percent</label>
+		<description>Percent representing the sunrise/sunset quality (derived from Quality Value)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="channel-type-quality-value" advanced="true">
+		<item-type>Number</item-type>
+		<label>Quality Value</label>
+		<description>Numerical representation of quality (generally not meaningful to the user)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="channel-type-last-updated" advanced="true">
+		<item-type>DateTime</item-type>
+		<label>Last Updated</label>
+		<description>Time when the algorithm computed the sunrise/sunset quality forecast</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="channel-type-imported-at" advanced="true">
+		<item-type>DateTime</item-type>
+		<label>Imported At</label>
+		<description>Time when the API received data from the sunrise/sunset quality algorithm</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="channel-type-valid-at">
+		<item-type>DateTime</item-type>
+		<label>Valid At</label>
+		<description>Time when the weather conditions are predicted to occur</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="channel-type-raw-response" advanced="true">
+		<item-type>String</item-type>
+		<label>Raw Response</label>
+		<description>Raw JSON response</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="channel-type-locale" advanced="true">
+		<item-type>String</item-type>
+		<label>Locale</label>
+		<description>The locale of the geolocation</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="channel-type-region" advanced="true">
+		<item-type>String</item-type>
+		<label>Region</label>
+		<description>The region of the geolocation</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="channel-type-country" advanced="true">
+		<item-type>String</item-type>
+		<label>Country</label>
+		<description>The country of the geolocation</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="channel-type-source" advanced="true">
+		<item-type>String</item-type>
+		<label>Source</label>
+		<description>The source of the geolocation conversion (e.g. MaxMind)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="channel-type-last-report-time" advanced="true">
+		<item-type>DateTime</item-type>
+		<label>Last Report Time</label>
+		<description>Time of last successful received quality report</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="channel-type-last-request-status" advanced="true">
+		<item-type>String</item-type>
+		<label>Last Request Status</label>
+		<description>Status of last SunsetWx service request (success or failure)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+</thing:thing-descriptions>

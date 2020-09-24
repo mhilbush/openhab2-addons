@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config-description:config-descriptions
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:config-description="https://openhab.org/schemas/config-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/config-description/v1.0.0 https://openhab.org/schemas/config-description-1.0.0.xsd">
+
+	<config-description uri="thing-type:sunsetwx:config">
+
+		<!-- Parameter groups -->
+		<parameter-group name="sunsetwx-credentials">
+			<label>SunsetWx Credentials</label>
+			<description>Email address and password needed to login to SunsetWx service</description>
+		</parameter-group>
+
+		<parameter-group name="sunsetwx-parameters">
+			<label>SunsetWx Parameters</label>
+			<description>Parameters needed by the SunsetWx quality API</description>
+		</parameter-group>
+
+		<parameter-group name="binding-parameters">
+			<label>Binding Parameters</label>
+			<description>Parameters needed by the binding</description>
+		</parameter-group>
+
+		<!-- Parameters -->
+		<parameter name="emailAddress" type="text" required="true" groupName="sunsetwx-credentials">
+			<label>Email Address</label>
+			<description>Email address used to login to SunsetWx service</description>
+			<context>email</context>
+		</parameter>
+
+		<parameter name="password" type="text" required="true" groupName="sunsetwx-credentials">
+			<label>Password</label>
+			<description>Password used to login to SunsetWx service</description>
+			<context>password</context>
+		</parameter>
+
+		<parameter name="geoLocation" type="text" required="true" groupName="sunsetwx-parameters">
+			<label>Geo Location</label>
+			<description>Longitude and latitude separated by a comma (e.g. -77.856128,40.812180)</description>
+			<default>-77.8600012,40.7933949</default>
+		</parameter>
+
+		<parameter name="radius" type="decimal" required="true" min="1.0" max="100.0"
+			groupName="sunsetwx-parameters">
+			<label>Radius</label>
+			<description>Radius around the geolocation (in kilometers)</description>
+			<default>50.0</default>
+		</parameter>
+
+		<parameter name="limit" type="integer" required="true" min="1" max="250" groupName="sunsetwx-parameters">
+			<label>Limit</label>
+			<description>Upper limit on number of features in SunsetWx response</description>
+			<default>40</default>
+		</parameter>
+
+		<parameter name="location" type="text" required="true" groupName="sunsetwx-parameters">
+			<label>Location</label>
+			<description>Determines resolution of features in SunsetWx response</description>
+			<default>northamerica</default>
+			<options>
+				<option value="northamerica">North America</option>
+				<option value="global">Global</option>
+			</options>
+		</parameter>
+
+		<parameter name="updateFrequency" type="integer" required="true" min="2" max="360"
+			groupName="binding-parameters">
+			<label>Update Frequency</label>
+			<description>Frequency to request quality updates from SunsetWx (in minutes)</description>
+			<default>20</default>
+		</parameter>
+
+	</config-description>
+
+</config-description:config-descriptions>
