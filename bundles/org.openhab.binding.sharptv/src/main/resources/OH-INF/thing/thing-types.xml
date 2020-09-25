@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="sharptv"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+
+	<thing-type id="sharptv">
+		<label>Sharp TV</label>
+		<description>Sharp TV</description>
+
+		<channels>
+			<channel id="power" typeId="power"/>
+			<channel id="volume" typeId="volume"/>
+			<channel id="mute" typeId="mute"/>
+			<channel id="channel" typeId="channel"/>
+			<channel id="channel-digital-air" typeId="channel-digital-air"/>
+			<channel id="channel-digital-cable" typeId="channel-digital-cable"/>
+			<channel id="channel-3-digit-direct" typeId="channel-3-digit-direct"/>
+			<channel id="channel-4-digit-direct" typeId="channel-4-digit-direct"/>
+			<channel id="input" typeId="input"/>
+			<channel id="av-mode" typeId="av-mode"/>
+			<channel id="sleep-timer" typeId="sleep-timer"/>
+			<channel id="disable-eco" typeId="disable-eco"/>
+		</channels>
+
+		<config-description>
+			<parameter name="ipAddress" type="text" required="true">
+				<label>Network Address</label>
+				<description>Enter the IP address of the fan</description>
+				<context>network-address</context>
+			</parameter>
+			<parameter name="port" type="integer" required="true">
+				<label>Port</label>
+				<description>Enter the port number for the TV</description>
+				<default>10002</default>
+			</parameter>
+			<parameter name="user" type="text" required="false">
+				<label>User</label>
+				<description>Enter the user id to access the TV</description>
+			</parameter>
+			<parameter name="password" type="text" required="false">
+				<label>Password</label>
+				<description>Enter the password to access the TV</description>
+				<context>password</context>
+			</parameter>
+		</config-description>
+	</thing-type>
+
+	<!-- Channel types -->
+	<channel-type id="power">
+		<item-type>Switch</item-type>
+		<label>Power</label>
+		<description>Power the device on and off</description>
+		<category>Switch</category>
+	</channel-type>
+	<channel-type id="volume">
+		<item-type>Dimmer</item-type>
+		<label>Volume</label>
+		<description>Control the volume of the TV</description>
+		<category>DimmableLight</category>
+	</channel-type>
+	<channel-type id="mute">
+		<item-type>Switch</item-type>
+		<label>Mute</label>
+		<description>Mute the volume</description>
+		<category>Switch</category>
+	</channel-type>
+	<channel-type id="channel">
+		<item-type>Number</item-type>
+		<label>Channel</label>
+		<description>Set the channel</description>
+		<category>DimmableLight</category>
+	</channel-type>
+	<channel-type id="channel-digital-air">
+		<item-type>Number</item-type>
+		<label>Channel Digital Air</label>
+		<description>Set the channel</description>
+		<category>DimmableLight</category>
+	</channel-type>
+	<channel-type id="channel-digital-cable">
+		<item-type>Number</item-type>
+		<label>Channel Digital Cable</label>
+		<description>Set the channel</description>
+		<category>DimmableLight</category>
+	</channel-type>
+	<channel-type id="channel-3-digit-direct">
+		<item-type>Number</item-type>
+		<label>Channel 3 Digit Direct</label>
+		<description>Set the channel</description>
+		<category>DimmableLight</category>
+	</channel-type>
+	<channel-type id="channel-4-digit-direct">
+		<item-type>Number</item-type>
+		<label>Channel 4 Digit Direct</label>
+		<description>Set the channel</description>
+		<category>DimmableLight</category>
+	</channel-type>
+	<channel-type id="input">
+		<item-type>Number</item-type>
+		<label>Input</label>
+		<description>Selects the input signal source</description>
+	</channel-type>
+	<channel-type id="av-mode">
+		<item-type>Number</item-type>
+		<label>AV Mode</label>
+		<description>Selects the AV Mode</description>
+	</channel-type>
+	<channel-type id="sleep-timer">
+		<item-type>Number</item-type>
+		<label>Sleep Timer</label>
+		<description>Set sleep timer (0=OFF, 1=30 minutes, 2=60, 3=90, 4=120)</description>
+	</channel-type>
+	<channel-type id="disable-eco">
+		<item-type>Switch</item-type>
+		<label>Disable Eco Mode</label>
+		<description>Disable eco mode (sends 'RSPW2' command)</description>
+		<category>Switch</category>
+	</channel-type>
+
+</thing:thing-descriptions>
