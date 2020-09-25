@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="loadgenerator" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:binding="https://openhab.org/schemas/binding/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/binding/v1.0.0 https://openhab.org/schemas/binding-1.0.0.xsd">
+
+	<name>LoadGenerator Binding</name>
+	<description>This binding is used to generate test load on openHAB</description>
+	<author>Mark Hilbush</author>
+
+	<config-description>
+		<parameter name="enable" type="boolean" min="0" max="10000">
+			<label>Enable Thing Creation/Delation</label>
+			<description>Enables the thing creation/deletion process</description>
+			<default>false</default>
+		</parameter>
+		<parameter name="thingCreationDelay" type="integer" min="0" max="10000">
+			<label>Thing Creation Delay</label>
+			<description>Delay between thing creation/deletion</description>
+			<required>true</required>
+			<default>100</default>
+		</parameter>
+	</config-description>
+
+</binding:binding>

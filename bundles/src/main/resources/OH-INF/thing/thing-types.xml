@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="loadgenerator"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+
+	<!-- Admin Thing -->
+	<thing-type id="admin">
+		<label>Load Generator Administration</label>
+		<description>Used to create/remove load generator things</description>
+		<channels>
+			<channel id="createThings" typeId="createThings" />
+			<channel id="removeThings" typeId="removeThings" />
+		</channels>
+		<config-description>
+			<parameter name="numStateUpdaterThings" type="integer" required="true" min="0" max="99" step="1">
+				<label>State Updater Things</label>
+				<description>Number of state updater things to create</description>
+				<default>2</default>
+			</parameter>
+			<parameter name="stateUpdaterDelayBetweenUpdates" type="integer" required="true" min="100" max="10000"
+				step="10">
+				<label>State Updater - Delay Between Updates</label>
+				<description>State Updater - Delay between updates</description>
+				<default>100</default>
+			</parameter>
+			<parameter name="stateUpdaterNumberOfChannels" type="integer" required="true" min="1" max="20" step="1">
+				<label>State Updater - Number of Channels</label>
+				<description>State Updater - Number of channels</description>
+				<default>20</default>
+			</parameter>
+			<parameter name="numCommandGeneratorThings" type="integer" required="true" min="0" max="99" step="1">
+				<label>Command Generator Things</label>
+				<description>Number of state updater things to create</description>
+				<default>2</default>
+			</parameter>
+			<parameter name="numThingUpdaterThings" type="integer" required="true" min="0" max="99" step="1">
+				<label>Thing Updater Things</label>
+				<description>Number of thing updater things to create</description>
+				<default>2</default>
+			</parameter>
+			<parameter name="thingUpdaterDelayBetweenUpdates" type="integer" required="true" min="10" max="1000"
+				step="10">
+				<label>Thing Updater - Delay Between Updates</label>
+				<description>Thing Updater - Delay between updates</description>
+				<default>100</default>
+			</parameter>
+		</config-description>
+	</thing-type>
+
+	<!-- State Updater -->
+	<thing-type id="stateUpdater">
+		<label>State Updater</label>
+		<description>Generates state updates at a fixed rate</description>
+		<channels>
+			<channel id="run" typeId="run" />
+			<channel id="numStateUpdates" typeId="numStateUpdates" />
+			<channel id="runtime" typeId="runtime" />
+			<channel id="state01" typeId="state" />
+			<channel id="state02" typeId="state" />
+			<channel id="state03" typeId="state" />
+			<channel id="state04" typeId="state" />
+			<channel id="state05" typeId="state" />
+			<channel id="state06" typeId="state" />
+			<channel id="state07" typeId="state" />
+			<channel id="state08" typeId="state" />
+			<channel id="state09" typeId="state" />
+			<channel id="state10" typeId="state" />
+			<channel id="state11" typeId="state" />
+			<channel id="state12" typeId="state" />
+			<channel id="state13" typeId="state" />
+			<channel id="state14" typeId="state" />
+			<channel id="state15" typeId="state" />
+			<channel id="state16" typeId="state" />
+			<channel id="state17" typeId="state" />
+			<channel id="state18" typeId="state" />
+			<channel id="state19" typeId="state" />
+			<channel id="state20" typeId="state" />
+		</channels>
+		<config-description>
+			<parameter name="delayBetweenUpdates" type="integer" required="true" max="10000" min="100" step="10">
+				<label>Delay</label>
+				<description>Delay between state updates (milliseconds)</description>
+				<default>500</default>
+			</parameter>
+			<parameter name="numberOfChannels" type="integer" required="true" max="20" min="1" step="1">
+				<label>Number of Channels</label>
+				<description>Number of state channels that will be updated</description>
+				<default>20</default>
+			</parameter>
+		</config-description>
+	</thing-type>
+
+	<!-- Command Generator -->
+	<thing-type id="commandGenerator">
+		<label>Command Generator</label>
+		<description>Processes commands with a fixed delay</description>
+		<channels>
+			<channel id="run" typeId="run" />
+			<channel id="numCommandsSent" typeId="numCommandsSent" />
+			<channel id="numCommandsProcessed" typeId="numCommandsProcessed" />
+			<channel id="runtime" typeId="runtime" />
+			<channel id="command" typeId="command" />
+		</channels>
+		<config-description>
+			<parameter name="delayBetweenCommands" type="integer" required="true" max="10000" min="100" step="100">
+				<label>Delay</label>
+				<description>Delay between commands</description>
+				<default>1000</default>
+			</parameter>
+			<parameter name="commandProcessingTime" type="integer" required="true" max="5000" min="0" step="100">
+				<label>Command Processing Time</label>
+				<description>Time to process a command</description>
+				<default>0</default>
+			</parameter>
+			<parameter name="itemName" type="text" required="true">
+				<label>Item Name</label>
+				<description>Name of item to which command will be sent</description>
+			</parameter>
+		</config-description>
+	</thing-type>
+
+	<!-- Thing Update Generator -->
+	<thing-type id="thingUpdater">
+		<label>Thing Update Generator</label>
+		<description>Perform thing update functions</description>
+		<channels>
+			<channel id="run" typeId="run" />
+		</channels>
+		<config-description>
+			<parameter name="delayBetweenUpdates" type="integer" required="true" max="10000" min="10" step="1">
+				<label>Delay</label>
+				<description>Delay between thing updates (milliseconds)</description>
+				<default>25</default>
+			</parameter>
+			<parameter name="testParameter" type="text">
+				<label>Test Parameter</label>
+				<description>Name of parameter for testing thing updates</description>
+			</parameter>
+		</config-description>
+	</thing-type>
+
+	<channel-type id="run">
+		<item-type>Switch</item-type>
+		<label>Start/Stop</label>
+		<description>Start/stop state updater</description>
+	</channel-type>
+	<channel-type id="createThings">
+		<item-type>Switch</item-type>
+		<label>Create Things</label>
+		<description>Create load generator things</description>
+	</channel-type>
+	<channel-type id="removeThings">
+		<item-type>Switch</item-type>
+		<label>Remove Things</label>
+		<description>Remove load generator things</description>
+	</channel-type>
+	<channel-type id="state">
+		<item-type>Number</item-type>
+		<label>State</label>
+		<description>Channel state updated at fixed rate</description>
+	</channel-type>
+	<channel-type id="command">
+		<item-type>Switch</item-type>
+		<label>Command</label>
+		<description>Channel to which command will be sent</description>
+	</channel-type>
+	<channel-type id="numStateUpdates">
+		<item-type>Number</item-type>
+		<label>State Updates</label>
+		<description>Number of state updates</description>
+	</channel-type>
+	<channel-type id="numCommandsSent">
+		<item-type>Number</item-type>
+		<label>Commands Sent</label>
+		<description>Number of commands sent</description>
+	</channel-type>
+	<channel-type id="numCommandsProcessed">
+		<item-type>Number</item-type>
+		<label>Commands Processed</label>
+		<description>Number of commands processed</description>
+	</channel-type>
+	<channel-type id="runtime">
+		<item-type>Number</item-type>
+		<label>Run Time</label>
+		<description>Runtime in seconds</description>
+	</channel-type>
+</thing:thing-descriptions>
