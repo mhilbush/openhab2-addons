@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="bhyve"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+
+	<!-- B-hyve Bridge -->
+	<bridge-type id="bridge">
+		<label>B-hyve Bridge</label>
+		<description>The B-hyve bridge represents a connection to the B-hyve online service</description>
+		<config-description-ref uri="thing-type:bhyve:bridge"/>
+	</bridge-type>
+
+	<!-- B-hyve Hub -->
+	<thing-type id="hub">
+		<supported-bridge-type-refs>
+			<bridge-type-ref id="bridge"/>
+		</supported-bridge-type-refs>
+		<label>B-hyve Hub</label>
+		<description>B-hyve hub</description>
+		<channels>
+			<channel id="numberOfStations" typeId="numberOfStations"></channel>
+			<channel id="lastConnectedTime" typeId="time"></channel>
+			<channel id="isConnected" typeId="isConnected"></channel>
+		</channels>
+		<config-description-ref uri="thing-type:bhyve:hub"/>
+	</thing-type>
+
+	<!-- B-hyve Sprinkler Timer -->
+	<thing-type id="sprinkler-timer">
+		<supported-bridge-type-refs>
+			<bridge-type-ref id="bridge"/>
+		</supported-bridge-type-refs>
+		<label>B-hyve Sprinkler Timer</label>
+		<description>B-hyve Sprinkler Timer</description>
+		<channels>
+			<channel id="mode" typeId="mode"></channel>
+			<channel id="wateringStatus" typeId="wateringStatus"></channel>
+			<channel id="startedWateringAt" typeId="time">
+				<label>Started Watering At</label>
+				<description>Time when current watering cycle started</description>
+			</channel>
+			<channel id="nextWateringAt" typeId="nextWateringAt"></channel>
+			<channel id="suggestedStartTime" typeId="suggestedStartTime"></channel>
+
+			<channel id="rainDelayStatus" typeId="rainDelayStatus"></channel>
+			<channel id="rainDelayWeatherType" typeId="rainDelayWeatherType"></channel>
+			<channel id="rainDelayDuration" typeId="rainDelayDuration"></channel>
+			<channel id="rainDelayStartedAt" typeId="time">
+				<label>Rain Delay Started At</label>
+				<description>Time when current rain delay started</description>
+			</channel>
+			<channel id="rainDelayEndAt" typeId="time">
+				<label>Rain Delay End At</label>
+				<description>Time when current rain delay will end</description>
+			</channel>
+
+			<channel id="batteryLevel" typeId="batteryLevel"></channel>
+			<channel id="lowBatteryAlarm" typeId="lowBatteryAlarm"></channel>
+			<channel id="lastConnectedAt" typeId="time">
+				<label>Last Connected At</label>
+				<description>Time when device last connected to the mesh network</description>
+			</channel>
+			<channel id="isConnected" typeId="isConnected"></channel>
+			<channel id="numberOfStations" typeId="numberOfStations"></channel>
+			<channel id="runTimeStation1" typeId="runTime">
+				<label>Station 1 Runtime</label>
+				<description>Duration of station 1 watering event in minutes</description>
+			</channel>
+		</channels>
+		<config-description-ref uri="thing-type:bhyve:sprinkler-timer"/>
+	</thing-type>
+
+	<!-- Channel Types -->
+	<channel-type id="mode">
+		<item-type>String</item-type>
+		<label>Mode</label>
+		<description>Mode</description>
+		<state pattern="%s"/>
+	</channel-type>
+
+	<channel-type id="wateringStatus">
+		<item-type>Switch</item-type>
+		<label>Watering Status</label>
+		<description>Watering status</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="suggestedStartTime">
+		<item-type>String</item-type>
+		<label>Suggested Start Time</label>
+		<description>Time when watering will start (format HH:MM)</description>
+		<state pattern="%s"/>
+	</channel-type>
+
+	<channel-type id="time">
+		<item-type>DateTime</item-type>
+		<label>Date Time</label>
+		<description>Date time</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="nextWateringAt">
+		<item-type>DateTime</item-type>
+		<label>Next Watering At</label>
+		<description>Day when next watering will take place</description>
+		<state readOnly="true" pattern="%1$tY-%1$tm-%1$td"/>
+	</channel-type>
+
+	<channel-type id="rainDelayDuration">
+		<item-type>Number</item-type>
+		<label>Rain Delay Duration</label>
+		<description>Rain delay duration (hours)</description>
+		<state pattern="%.0f"/>
+	</channel-type>
+
+	<channel-type id="rainDelayStatus">
+		<item-type>Switch</item-type>
+		<label>Rain Delay Status</label>
+		<description>Rain delay Status (ON - rain delay in effect)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="rainDelayWeatherType">
+		<item-type>String</item-type>
+		<label>Rain Delay Weather Type</label>
+		<description>Type of weather that caused the rain delay</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="lowBatteryAlarm">
+		<item-type>Switch</item-type>
+		<label>Low Battery Alarm</label>
+		<description>Low battery alarm</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="batteryLevel">
+		<item-type>Number</item-type>
+		<label>Battery Level</label>
+		<description>Battery level</description>
+		<state readOnly="true" pattern="%.0f"/>
+	</channel-type>
+
+	<channel-type id="numberOfStations">
+		<item-type>Number</item-type>
+		<label>Number of Stations</label>
+		<description>Number of stations in this device</description>
+		<state readOnly="true" pattern="%.0f"/>
+	</channel-type>
+
+	<channel-type id="runTime">
+		<item-type>Number</item-type>
+		<label>Runtime</label>
+		<description>Runtime (minutes))</description>
+		<state pattern="%.0f"/>
+	</channel-type>
+
+	<channel-type id="isConnected">
+		<item-type>Switch</item-type>
+		<label>Is Connected</label>
+		<description>Device is connected</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+</thing:thing-descriptions>
