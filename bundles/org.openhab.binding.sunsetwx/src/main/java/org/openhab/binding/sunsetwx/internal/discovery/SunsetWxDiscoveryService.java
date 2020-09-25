@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.openhab.binding.sunsetwx.internal.dto.DiscoveryLocationResponse;
 import org.openhab.core.config.discovery.AbstractDiscoveryService;
 import org.openhab.core.config.discovery.DiscoveryResultBuilder;
 import org.openhab.core.config.discovery.DiscoveryService;
@@ -28,6 +28,8 @@ import org.openhab.core.thing.ThingUID;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
 
 /**
  * The {@link SunsetWxDiscoveryService} tries to automatically discover the
@@ -40,6 +42,8 @@ import org.slf4j.LoggerFactory;
 public class SunsetWxDiscoveryService extends AbstractDiscoveryService {
 
     private final Logger logger = LoggerFactory.getLogger(SunsetWxDiscoveryService.class);
+
+    private final Gson gson = new Gson();
 
     /**
      * Creates a SunsetWxDiscoveryService with disabled autostart.
@@ -60,25 +64,21 @@ public class SunsetWxDiscoveryService extends AbstractDiscoveryService {
             result = null;
         }
 
+        geoLocation = DEFAULT_COORDINATES;
         if (result != null) {
-            String lat = StringUtils.trim(StringUtils.substringBetween(result, "\"lat\":", ","));
-            String lon = StringUtils.trim(StringUtils.substringBetween(result, "\"lon\":", "}"));
-
-            try {
-                Double latitude = Double.parseDouble(lat);
-                Double longitude = Double.parseDouble(lon);
+            DiscoveryLocationResponse location = gson.fromJson(result, DiscoveryLocationResponse.class);
+            if (location != null) {
+                Double latitude = location.lat;
+                Double longitude = location.lon;
                 logger.info("Evaluated geolocation: longitude: {}, latitude: {}", longitude, latitude);
-
                 geoLocation = String.format("%s,%s", longitude.toString(), latitude.toString());
-                logger.debug("SunsetWx propGeolocation: {}", geoLocation);
-            } catch (Exception ex) {
-                geoLocation = DEFAULT_COORDINATES;
-                logger.warn("Can't discover geolocation, using defaults of {}", geoLocation);
+            } else {
+                logger.info("Can't discover geolocation, using defaults of {}", geoLocation);
             }
         } else {
-            geoLocation = DEFAULT_COORDINATES;
-            logger.warn("Can't discover geolocation, using defaults of {}", geoLocation);
+            logger.info("Can't discover geolocation, using defaults of {}", geoLocation);
         }
+        logger.debug("SunsetWx propGeolocation: {}", geoLocation);
 
         ThingUID sunriseThing = new ThingUID(THING_TYPE_SUNRISE, "local");
         ThingUID sunsetThing = new ThingUID(THING_TYPE_SUNSET, "local");

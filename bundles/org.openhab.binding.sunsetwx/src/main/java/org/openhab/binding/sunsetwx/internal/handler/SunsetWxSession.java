@@ -21,7 +21,6 @@ import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sunsetwx.internal.dto.ErrorResponseDTO;
 import org.openhab.binding.sunsetwx.internal.dto.FeatureContainerDTO;
 import org.openhab.binding.sunsetwx.internal.dto.LocationFeatureDTO;
@@ -129,7 +128,7 @@ public class SunsetWxSession {
         String loginURL = URL_DOMAIN + URL_VERSION + URL_LOGIN;
 
         // Validate that we have an email address and password
-        if (StringUtils.isEmpty(emailAddress) || StringUtils.isEmpty(password)) {
+        if (emailAddress == null || password == null) {
             logger.warn("Email address and/or password are not set in configuration for thing {}", thing.getUID());
             handler.updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
                     "Email address or password not set");
