@@ -12,7 +12,8 @@ The binding currently supports weather data from these weather stations.
 | Account                  | bridge    |
 | WS-0900-IP               | ws0900ip  |
 | WS-1400-IP / WS-1401-IP  | ws1400ip  |
-| WS-2902A                 | ws2902a   |
+| WS-2902A / WS-2902C      | ws2902a   |
+| WS-2902B                 | ws2902a   |
 | WS-8482                  | ws8482    |
 | WS-0265                  | ws0265    |
 
