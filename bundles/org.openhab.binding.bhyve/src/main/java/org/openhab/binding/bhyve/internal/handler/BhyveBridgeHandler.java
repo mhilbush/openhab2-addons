@@ -148,6 +148,7 @@ public class BhyveBridgeHandler extends BaseBridgeHandler {
         // Bridge doesn't support any commands
     }
 
+    @Nullable
     public ResponseDeviceDTO getDevice(String id) {
         return devicesCache.get(id);
     }
@@ -170,7 +171,7 @@ public class BhyveBridgeHandler extends BaseBridgeHandler {
         return sessionToken != null ? true : false;
     }
 
-    public void updateThingStatus(String errorDetail, String statusDescription) {
+    public void updateThingStatus(@Nullable String errorDetail, String statusDescription) {
         logger.debug("Bridge: Login FAILED. Setting bridge OFFLINE: {}", errorDetail);
         updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.COMMUNICATION_ERROR, statusDescription);
     }
