@@ -56,11 +56,12 @@ public class SharpTVDiscoveryParticipant implements UpnpDiscoveryParticipant {
             Map<String, Object> properties = new HashMap<>(3);
             properties.put("ipAddress", device.getIdentity().getDescriptorURL().getHost());
             properties.put("friendlyName", details.getFriendlyName());
+            properties.put("uuid", device.getIdentity().getUdn().getIdentifierString());
 
             logger.debug("Adding inbox entry for Sharp TV at IP {}", device.getIdentity().getDescriptorURL().getHost());
 
-            return DiscoveryResultBuilder.create(uid).withProperties(properties).withLabel(details.getFriendlyName())
-                    .build();
+            return DiscoveryResultBuilder.create(uid).withProperties(properties).withRepresentationProperty("uuid")
+                    .withLabel(details.getFriendlyName()).build();
         }
         return null;
     }

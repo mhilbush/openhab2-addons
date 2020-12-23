@@ -23,6 +23,8 @@
 			<channel id="disable-eco" typeId="disable-eco"/>
 		</channels>
 
+		<representation-property>uuid</representation-property>
+
 		<config-description>
 			<parameter name="ipAddress" type="text" required="true">
 				<label>Network Address</label>
