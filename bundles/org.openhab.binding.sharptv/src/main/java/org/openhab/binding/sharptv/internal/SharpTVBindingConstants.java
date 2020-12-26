@@ -28,7 +28,7 @@ import org.openhab.core.thing.ThingTypeUID;
 public class SharpTVBindingConstants {
     public static final String BINDING_ID = "sharptv";
 
-    public static final ThingTypeUID THING_TYPE_SHARP_TV = new ThingTypeUID(BINDING_ID, "sharptv");
+    public static final ThingTypeUID THING_TYPE_SHARP_TV = new ThingTypeUID(BINDING_ID, "tv");
 
     // List of all Thing Type UIDs
     public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections.singleton(THING_TYPE_SHARP_TV);

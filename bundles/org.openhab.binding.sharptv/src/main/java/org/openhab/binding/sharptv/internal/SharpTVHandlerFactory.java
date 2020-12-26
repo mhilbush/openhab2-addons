@@ -22,11 +22,8 @@ import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.core.thing.binding.BaseThingHandlerFactory;
 import org.openhab.core.thing.binding.ThingHandler;
 import org.openhab.core.thing.binding.ThingHandlerFactory;
-import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The {@link SharpTVHandlerFactory} is responsible for creating things and thing
@@ -37,13 +34,6 @@ import org.slf4j.LoggerFactory;
 @NonNullByDefault
 @Component(service = ThingHandlerFactory.class, configurationPid = "binding.sharptv", configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class SharpTVHandlerFactory extends BaseThingHandlerFactory {
-    private Logger logger = LoggerFactory.getLogger(SharpTVHandlerFactory.class);
-
-    @Override
-    protected void activate(ComponentContext componentContext) {
-        super.activate(componentContext);
-        logger.info("SharpTV binding v{}", bundleContext.getBundle().getVersion());
-    }
 
     @Override
     public boolean supportsThingType(ThingTypeUID thingTypeUID) {
@@ -53,7 +43,6 @@ public class SharpTVHandlerFactory extends BaseThingHandlerFactory {
     @Override
     protected @Nullable ThingHandler createHandler(Thing thing) {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
-
         if (SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID)) {
             return new SharpTVHandler(thing);
         }

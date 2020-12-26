@@ -22,12 +22,14 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.jupnp.model.meta.DeviceDetails;
 import org.jupnp.model.meta.RemoteDevice;
+import org.openhab.binding.sharptv.handler.SharpTVHandler;
 import org.openhab.core.config.discovery.DiscoveryResult;
 import org.openhab.core.config.discovery.DiscoveryResultBuilder;
 import org.openhab.core.config.discovery.upnp.UpnpDiscoveryParticipant;
 import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.core.thing.ThingUID;
-import org.osgi.service.component.annotations.Component;
+import org.openhab.core.thing.binding.ThingHandler;
+import org.openhab.core.thing.binding.ThingHandlerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,15 +39,28 @@ import org.slf4j.LoggerFactory;
  * @author Mark Hilbush - Initial contribution
  */
 @NonNullByDefault
-@Component(service = UpnpDiscoveryParticipant.class, immediate = true)
-public class SharpTVDiscoveryParticipant implements UpnpDiscoveryParticipant {
+// @Component(service = UpnpDiscoveryParticipant.class)
+public class SharpTVDiscoveryParticipant implements UpnpDiscoveryParticipant, ThingHandlerService {
+
     private final Logger logger = LoggerFactory.getLogger(SharpTVDiscoveryParticipant.class);
 
-    private Set<ThingTypeUID> supportedThingTypes = SUPPORTED_THING_TYPES_UIDS;
+    private @NonNullByDefault({}) SharpTVHandler thingHandler;
 
     @Override
     public Set<ThingTypeUID> getSupportedThingTypeUIDs() {
-        return supportedThingTypes;
+        return SUPPORTED_THING_TYPES_UIDS;
+    }
+
+    @Override
+    public void setThingHandler(ThingHandler handler) {
+        if (handler instanceof SharpTVHandler) {
+            thingHandler = (SharpTVHandler) handler;
+        }
+    }
+
+    @Override
+    public @Nullable ThingHandler getThingHandler() {
+        return thingHandler;
     }
 
     @Override
@@ -53,15 +68,19 @@ public class SharpTVDiscoveryParticipant implements UpnpDiscoveryParticipant {
         ThingUID uid = getThingUID(device);
         if (uid != null) {
             DeviceDetails details = device.getDetails();
+            final String ipAddress = device.getIdentity().getDescriptorURL().getHost();
+            final String friendlyName = details.getFriendlyName();
+
+            if (!thingHandler.isDiscoveryEnabled()) {
+                logger.debug("SharpTvDiscovery: Skipping '{}' at '{}' because discovery is disabled", friendlyName,
+                        ipAddress);
+                return null;
+            }
             Map<String, Object> properties = new HashMap<>(3);
-            properties.put("ipAddress", device.getIdentity().getDescriptorURL().getHost());
-            properties.put("friendlyName", details.getFriendlyName());
-            properties.put("uuid", device.getIdentity().getUdn().getIdentifierString());
-
-            logger.debug("Adding inbox entry for Sharp TV at IP {}", device.getIdentity().getDescriptorURL().getHost());
-
-            return DiscoveryResultBuilder.create(uid).withProperties(properties).withRepresentationProperty("uuid")
-                    .withLabel(details.getFriendlyName()).build();
+            properties.put("ipAddress", ipAddress);
+            properties.put("friendlyName", friendlyName);
+            logger.debug("SharpTvDiscovery: Adding '{}' to inbox at IP {}", friendlyName, ipAddress);
+            return DiscoveryResultBuilder.create(uid).withProperties(properties).withLabel(friendlyName).build();
         }
         return null;
     }
@@ -71,44 +90,58 @@ public class SharpTVDiscoveryParticipant implements UpnpDiscoveryParticipant {
         DeviceDetails details = device.getDetails();
         String friendlyName = details.getFriendlyName().toUpperCase();
 
-        logger.debug("Discovered a uPnP device {} at {}", friendlyName, device.getIdentity().getDescriptorURL());
+        logger.debug("SharpTvDiscovery: Discovered a uPnP device {} at {}", friendlyName,
+                device.getIdentity().getDescriptorURL());
 
         if (friendlyName != null && isSharpTV(friendlyName)) {
-            logger.trace("Device is a Sharp TV named {} with the following details", friendlyName);
-            logger.trace("  device.identity.toString={}", device.getIdentity().toString());
-            logger.trace("  ---------------------------------------------");
+            if (logger.isTraceEnabled()) {
+                logger.trace("SharpTvDiscovery: Device is a Sharp TV named {} with the following details",
+                        friendlyName);
+                logger.trace("SharpTvDiscovery:   device.identity.toString={}", device.getIdentity().toString());
+                logger.trace("  ---------------------------------------------");
 
-            logger.trace("  device.displayDetails={}", device.getDisplayString());
-            logger.trace("  device.embeddedDevices={}", device.getEmbeddedDevices().toString());
-            logger.trace("  ---------------------------------------------");
+                logger.trace("SharpTvDiscovery:   device.displayDetails={}", device.getDisplayString());
+                logger.trace("SharpTvDiscovery:   device.embeddedDevices={}", device.getEmbeddedDevices().toString());
+                logger.trace("SharpTvDiscovery:   ---------------------------------------------");
 
-            logger.trace("  device.identity.localAddress={}", device.getIdentity().getDiscoveredOnLocalAddress());
-            logger.trace("  device.identity.interfaceMacAddress={}", device.getIdentity().getInterfaceMacAddress());
-            logger.trace("  device.identity.descriptorUrl={}", device.getIdentity().getDescriptorURL());
-            logger.trace("  device.identity.descriptorUrl={}", device.getIdentity().getWakeOnLANBytes());
-            logger.trace("  device.identity.udn={}", device.getIdentity().getUdn().getIdentifierString());
-            logger.trace("  ---------------------------------------------");
-            logger.trace("  device.root.services={}", device.getRoot().getServices().toString());
-            logger.trace("  ---------------------------------------------");
+                logger.trace("SharpTvDiscovery:   device.identity.localAddress={}",
+                        device.getIdentity().getDiscoveredOnLocalAddress());
+                logger.trace("SharpTvDiscovery:   device.identity.interfaceMacAddress={}",
+                        device.getIdentity().getInterfaceMacAddress());
+                logger.trace("SharpTvDiscovery:   device.identity.descriptorUrl={}",
+                        device.getIdentity().getDescriptorURL());
+                logger.trace("SharpTvDiscovery:   device.identity.descriptorUrl={}",
+                        device.getIdentity().getWakeOnLANBytes());
+                logger.trace("SharpTvDiscovery:   device.identity.udn={}",
+                        device.getIdentity().getUdn().getIdentifierString());
+                logger.trace("SharpTvDiscovery:   ---------------------------------------------");
+                logger.trace("SharpTvDiscovery:   device.root.services={}", device.getRoot().getServices().toString());
+                logger.trace("SharpTvDiscovery:   ---------------------------------------------");
 
-            logger.trace("  device.details.friendlyName={}", details.getFriendlyName());
-            logger.trace("  device.details.serialNumber={}", details.getSerialNumber());
-            logger.trace("  device.details.secProductCaps={}", details.getSecProductCaps());
-            logger.trace("  device.details.baseURL={}", details.getBaseURL());
-            logger.trace("  device.details.dlnaCaps={}", details.getDlnaCaps());
-            logger.trace("  device.details.dlnaDocs={}", details.getDlnaDocs().toString());
-            logger.trace("  ---------------------------------------------");
+                logger.trace("SharpTvDiscovery:   device.details.friendlyName={}", details.getFriendlyName());
+                logger.trace("SharpTvDiscovery:   device.details.serialNumber={}", details.getSerialNumber());
+                logger.trace("SharpTvDiscovery:   device.details.secProductCaps={}", details.getSecProductCaps());
+                logger.trace("SharpTvDiscovery:   device.details.baseURL={}", details.getBaseURL());
+                logger.trace("SharpTvDiscovery:   device.details.dlnaCaps={}", details.getDlnaCaps());
+                logger.trace("SharpTvDiscovery:   device.details.dlnaDocs={}", details.getDlnaDocs().toString());
+                logger.trace("SharpTvDiscovery:   ---------------------------------------------");
 
-            logger.trace("  device.details.model.name={}", details.getModelDetails().getModelName());
-            logger.trace("  device.details.model.description={}", details.getModelDetails().getModelDescription());
-            logger.trace("  device.details.model.number={}", details.getModelDetails().getModelNumber());
-            logger.trace("  device.details.model.uri={}", details.getModelDetails().getModelURI());
-            logger.trace("  ---------------------------------------------");
+                logger.trace("SharpTvDiscovery:   device.details.model.name={}",
+                        details.getModelDetails().getModelName());
+                logger.trace("SharpTvDiscovery:   device.details.model.description={}",
+                        details.getModelDetails().getModelDescription());
+                logger.trace("SharpTvDiscovery:   device.details.model.number={}",
+                        details.getModelDetails().getModelNumber());
+                logger.trace("SharpTvDiscovery:   device.details.model.uri={}",
+                        details.getModelDetails().getModelURI());
+                logger.trace("SharpTvDiscovery:   ---------------------------------------------");
 
-            logger.trace("  device.details.manufacturer.name={}", details.getManufacturerDetails().getManufacturer());
-            logger.trace("  device.details.manufacturer.uri={}", details.getManufacturerDetails().getManufacturerURI());
-            logger.trace("  ---------------------------------------------");
-
+                logger.trace("SharpTvDiscovery:   device.details.manufacturer.name={}",
+                        details.getManufacturerDetails().getManufacturer());
+                logger.trace("SharpTvDiscovery:   device.details.manufacturer.uri={}",
+                        details.getManufacturerDetails().getManufacturerURI());
+                logger.trace("SharpTvDiscovery:   ---------------------------------------------");
+            }
             return new ThingUID(THING_TYPE_SHARP_TV, device.getIdentity().getUdn().getIdentifierString());
         }
         return null;

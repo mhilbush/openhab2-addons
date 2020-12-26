@@ -4,7 +4,7 @@
 	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
 	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
 
-	<thing-type id="sharptv">
+	<thing-type id="tv">
 		<label>Sharp TV</label>
 		<description>Sharp TV</description>
 
@@ -22,8 +22,6 @@
 			<channel id="sleep-timer" typeId="sleep-timer"/>
 			<channel id="disable-eco" typeId="disable-eco"/>
 		</channels>
-
-		<representation-property>uuid</representation-property>
 
 		<config-description>
 			<parameter name="ipAddress" type="text" required="true">
@@ -44,6 +42,11 @@
 				<label>Password</label>
 				<description>Enter the password to access the TV</description>
 				<context>password</context>
+			</parameter>
+			<parameter name="discoveryEnabled" type="boolean">
+				<label>Discovery Enabled</label>
+				<description>Enable background discovery of Sharp TVs</description>
+				<default>true</default>
 			</parameter>
 		</config-description>
 	</thing-type>

@@ -25,6 +25,7 @@ public class SharpTVConfig {
     private int port;
     private String user = "";
     private String password = "";
+    private boolean discoveryEnabled = true;
 
     public String getIpAddress() {
         return ipAddress;
@@ -58,6 +59,14 @@ public class SharpTVConfig {
         this.password = password;
     }
 
+    public boolean getDiscoveryEnabled() {
+        return discoveryEnabled;
+    }
+
+    public void setDiscoveryEnabled(boolean discoveryEnabled) {
+        this.discoveryEnabled = discoveryEnabled;
+    }
+
     public boolean isValid() {
         if (ipAddress.isBlank()) {
             return false;
@@ -67,6 +76,7 @@ public class SharpTVConfig {
 
     @Override
     public String toString() {
-        return "SharpTVConfig{ipAddress=" + ipAddress + ", port=" + port + ", user=" + user + ", password=XXXX" + "}";
+        return "SharpTVConfig{ ipAddress=" + ipAddress + ", port=" + port + ", user=" + user + ", password=XXXX"
+                + ", discoveryEnabled=" + discoveryEnabled + " }";
     }
 }
