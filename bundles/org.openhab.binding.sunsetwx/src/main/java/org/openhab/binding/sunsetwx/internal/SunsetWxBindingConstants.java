@@ -31,35 +31,25 @@ public class SunsetWxBindingConstants {
 
     public static final String BINDING_ID = "sunsetwx";
 
+    // Bridge
+    public static final ThingTypeUID THING_TYPE_UID_ACCOUNT = new ThingTypeUID(BINDING_ID, "account");
+    public static final Set<ThingTypeUID> SUPPORTED_BRIDGE_THING_TYPES_UIDS = Collections
+            .unmodifiableSet(Stream.of(THING_TYPE_UID_ACCOUNT).collect(Collectors.toSet()));
+
     // List of all Thing Type UIDs
-    public static final ThingTypeUID THING_TYPE_SUNRISE = new ThingTypeUID(BINDING_ID, "sunrise");
-    public static final ThingTypeUID THING_TYPE_SUNSET = new ThingTypeUID(BINDING_ID, "sunset");
+    public static final ThingTypeUID THING_TYPE_UID_SUNRISE = new ThingTypeUID(BINDING_ID, "sunrise");
+    public static final ThingTypeUID THING_TYPE_UID_SUNSET = new ThingTypeUID(BINDING_ID, "sunset");
 
-    public static final String THING_SUNRISE_LABEL = "Local SunsetWx Sunrise";
-    public static final String THING_SUNSET_LABEL = "Local SunsetWx Sunset";
+    // Collection of SunsetWx thing types
+    public static final Set<ThingTypeUID> SUPPORTED_SUNSETWX_THING_TYPES_UIDS = Collections
+            .unmodifiableSet(Stream.of(THING_TYPE_UID_SUNRISE, THING_TYPE_UID_SUNSET).collect(Collectors.toSet()));
 
-    public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections
-            .unmodifiableSet(Stream.of(THING_TYPE_SUNRISE, THING_TYPE_SUNSET).collect(Collectors.toSet()));
-
-    // Thing configuration items
-    public static final String THING_PROPERTY_GEOLOCATION = "geoLocation";
-    public static final String THING_PROPERTY_RADIUS = "radius";
-    public static final String THING_PROPERTY_LIMIT = "limit";
-    public static final String THING_PROPERTY_LOCATION = "location";
-    public static final String THING_PROPERTY_UPDATE_FREQUENCY = "updateFrequency";
-    public static final String THING_PROPERTY_EMAILADDRESS = "emailAddress";
-    public static final String THING_PROPERTY_PASSWORD = "password";
-
-    // Configuration defaults
-    public static final String DEFAULT_TYPE = "sunset";
-    public static final String DEFAULT_COORDINATES = "-77.8600012,40.7933949";
-    public static final int DEFAULT_LIMIT = 8;
-    public static final double DEFAULT_RADIUS = 20.0;
-    public static final String DEFAULT_LOCATION = "northamerica";
-    public static final int DEFAULT_UPDATE_FREQUENCY = 15;
+    // Collection of all supported thing types
+    public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections.unmodifiableSet(
+            Stream.concat(SUPPORTED_BRIDGE_THING_TYPES_UIDS.stream(), SUPPORTED_SUNSETWX_THING_TYPES_UIDS.stream())
+                    .collect(Collectors.toSet()));
 
     // List of channel IDs
-    public static final String CHANNEL_GET_QUALITY = "getQuality";
     public static final String CHANNEL_QUALITY = "quality";
     public static final String CHANNEL_QUALITY_PERCENT = "qualityPercent";
     public static final String CHANNEL_QUALITY_VALUE = "qualityValue";
@@ -72,12 +62,6 @@ public class SunsetWxBindingConstants {
     public static final String CHANNEL_VALID_AT = "validAt";
     public static final String CHANNEL_RAW_RESPONSE = "rawResponse";
     public static final String CHANNEL_LAST_REPORT_TIME = "lastReportTime";
-
-    // Models supported by the SunsetWx service
-    public enum ModelType {
-        SUNRISE,
-        SUNSET
-    }
 
     // List of sunrise/sunset quality terms
     public static final String QUALITY_POOR = "Poor";

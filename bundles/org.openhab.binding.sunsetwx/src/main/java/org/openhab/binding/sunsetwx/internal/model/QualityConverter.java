@@ -13,7 +13,6 @@
 package org.openhab.binding.sunsetwx.internal.model;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.openhab.binding.sunsetwx.internal.SunsetWxBindingConstants.ModelType;
 
 /**
  * Convert the quality value to a quality string based on the conversion
