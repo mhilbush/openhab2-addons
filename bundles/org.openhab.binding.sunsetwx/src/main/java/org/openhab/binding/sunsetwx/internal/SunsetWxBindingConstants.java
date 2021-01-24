@@ -64,8 +64,8 @@ public class SunsetWxBindingConstants {
     public static final String CHANNEL_LAST_REPORT_TIME = "lastReportTime";
 
     // List of sunrise/sunset quality terms
-    public static final String QUALITY_POOR = "Poor";
-    public static final String QUALITY_FAIR = "Fair";
-    public static final String QUALITY_GOOD = "Good";
-    public static final String QUALITY_GREAT = "Great";
+    // public static final String QUALITY_POOR = "Poor";
+    // public static final String QUALITY_FAIR = "Fair";
+    // public static final String QUALITY_GOOD = "Good";
+    // public static final String QUALITY_GREAT = "Great";
 }

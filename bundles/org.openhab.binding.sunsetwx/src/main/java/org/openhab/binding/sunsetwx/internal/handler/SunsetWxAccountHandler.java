@@ -85,7 +85,7 @@ public class SunsetWxAccountHandler extends BaseBridgeHandler {
 
     @Override
     public void dispose() {
-        logger.debug("Disposing sunsetwx account handler for {}", getThing().getUID());
+        logger.debug("SunsetWxAccount: Disposing sunsetwx account handler for {}", getThing().getUID());
         api = null;
     }
 
@@ -122,7 +122,7 @@ public class SunsetWxAccountHandler extends BaseBridgeHandler {
         if (location == null) {
             return null;
         }
-        return String.format("%d,%d", location.getLongitude(), location.getLatitude());
+        return formatGeolocation(location.getLatitude().doubleValue(), location.getLongitude().doubleValue());
     }
 
     public LocaleProvider getLocaleProvider() {
@@ -134,6 +134,10 @@ public class SunsetWxAccountHandler extends BaseBridgeHandler {
             return api.getSunsetWxQuality(request);
         }
         return null;
+    }
+
+    public String formatGeolocation(double lat, double lon) {
+        return String.format("%f,%f", lon, lat);
     }
 
     public boolean isBackgroundDiscoveryEnabled() {

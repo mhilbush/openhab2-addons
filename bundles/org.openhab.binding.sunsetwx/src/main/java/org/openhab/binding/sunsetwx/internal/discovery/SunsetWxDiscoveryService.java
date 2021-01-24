@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.openhab.binding.sunsetwx.internal.dto.DiscoveryLocationResponse;
+import org.openhab.binding.sunsetwx.internal.dto.GeoIpResponse;
 import org.openhab.binding.sunsetwx.internal.handler.SunsetWxAccountHandler;
 import org.openhab.core.config.discovery.AbstractDiscoveryService;
 import org.openhab.core.config.discovery.DiscoveryResult;
@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 public class SunsetWxDiscoveryService extends AbstractDiscoveryService
         implements DiscoveryService, ThingHandlerService {
 
-    private static final int DISCOVERY_INTERVAL_SECONDS = 300;
+    private static final int DISCOVERY_INTERVAL_SECONDS = 600;
     private static final int DISCOVERY_INITIAL_DELAY_SECONDS = 10;
 
     private static final String THING_PROPERTY_GEOLOCATION = "geoLocation";
@@ -60,7 +60,7 @@ public class SunsetWxDiscoveryService extends AbstractDiscoveryService
     private @Nullable Future<?> discoveryJob;
 
     public SunsetWxDiscoveryService() {
-        super(SUPPORTED_SUNSETWX_THING_TYPES_UIDS, 10, true);
+        super(SUPPORTED_SUNSETWX_THING_TYPES_UIDS, 12, true);
     }
 
     @Override
@@ -110,24 +110,24 @@ public class SunsetWxDiscoveryService extends AbstractDiscoveryService
         discoverThings();
     }
 
-    private void discoverThings() {
+    private synchronized void discoverThings() {
         logger.debug("SunsetWxDiscovery: Starting SunsetWx discovery scan");
         String geoLocation = bridgeHandler.getGeoLocation();
         if (geoLocation == null) {
-            geoLocation = getGeoLocationFromIpAddress();
+            geoLocation = lookupGeoLocationFromIpAddress();
         }
         if (geoLocation == null) {
             logger.debug("SunsetWxDiscovery: Can't find geolocation to use for discovery");
             return;
         }
-        logger.debug("SunsetWxDiscovery: SunsetWx propGeolocation: {}", geoLocation);
         Map<String, Object> properties = new HashMap<>();
         properties.put(THING_PROPERTY_GEOLOCATION, geoLocation);
 
         ThingUID bridgeUID = bridgeHandler.getThing().getUID();
         ThingUID sunriseThingUID = new ThingUID(THING_TYPE_UID_SUNRISE, bridgeUID, "local");
         ThingUID sunsetThingUID = new ThingUID(THING_TYPE_UID_SUNSET, bridgeUID, "local");
-        logger.debug("SunsetWxDiscovery: Creating things ({}) and ({})", sunriseThingUID, sunsetThingUID);
+
+        logger.trace("SunsetWxDiscovery: Creating things ({}) and ({})", sunriseThingUID, sunsetThingUID);
         thingDiscovered(createDiscoveryResult(sunriseThingUID, bridgeUID, THING_SUNRISE_LABEL, properties));
         thingDiscovered(createDiscoveryResult(sunsetThingUID, bridgeUID, THING_SUNSET_LABEL, properties));
     }
@@ -138,17 +138,14 @@ public class SunsetWxDiscoveryService extends AbstractDiscoveryService
                 .build();
     }
 
-    private @Nullable String getGeoLocationFromIpAddress() {
+    @SuppressWarnings("null")
+    private @Nullable String lookupGeoLocationFromIpAddress() {
         try {
             String response = HttpUtil.executeUrl("GET", "http://ip-api.com/json/?fields=lat,lon", 5000);
-            logger.debug("SunsetWxDiscovery: Response from ip-api.com: {}", response);
-            DiscoveryLocationResponse location = bridgeHandler.getGson().fromJson(response,
-                    DiscoveryLocationResponse.class);
-            if (location != null) {
-                Double lat = location.lat;
-                Double lon = location.lon;
-                logger.debug("SunsetWxDiscovery: Got location from IP address: lat: {}, lon: {}", lat, lon);
-                return String.format("%s,%s", lon.toString(), lat.toString());
+            logger.trace("SunsetWxDiscovery: Response from ip-api.com: {}", response);
+            GeoIpResponse geoIpResponse = bridgeHandler.getGson().fromJson(response, GeoIpResponse.class);
+            if (geoIpResponse != null) {
+                return bridgeHandler.formatGeolocation(geoIpResponse.lat, geoIpResponse.lon);
             }
         } catch (IOException e) {
             logger.debug("SunsetWxDiscovery: IOException getting location from IP address: {}", e.getMessage());

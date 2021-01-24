@@ -10,23 +10,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.sunsetwx.internal.model;
+package org.openhab.binding.sunsetwx.internal.dto;
 
-import org.eclipse.jdt.annotation.NonNullByDefault;
+import com.google.gson.annotations.SerializedName;
 
 /**
- * The {@link ModelType} defines the models supported by the SunsetWx service
+ * The {@link GeoIpResponse} class is used to parse the response from the
+ * location discovery API call.
  *
  * @author Mark Hilbush - Initial contribution
  */
-@NonNullByDefault
-public enum ModelType {
-    SUNRISE("sunrise"),
-    SUNSET("sunset");
+public class GeoIpResponse {
 
-    public final String label;
+    @SerializedName("lat")
+    public Double lat;
 
-    private ModelType(String label) {
-        this.label = label;
-    }
+    @SerializedName("lon")
+    public Double lon;
 }

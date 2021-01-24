@@ -28,6 +28,7 @@ import org.openhab.binding.sunsetwx.internal.dto.QualityPropertiesDTO;
 import org.openhab.binding.sunsetwx.internal.dto.QualityRequestDTO;
 import org.openhab.binding.sunsetwx.internal.model.ModelType;
 import org.openhab.binding.sunsetwx.internal.model.QualityConverter;
+import org.openhab.binding.sunsetwx.internal.model.QualityType;
 import org.openhab.binding.sunsetwx.internal.model.RunningStats;
 import org.openhab.core.common.AbstractUID;
 import org.openhab.core.library.types.DateTimeType;
@@ -214,10 +215,10 @@ public class SunsetWxHandler extends BaseThingHandler {
 
         // Use the average quality value to determine the quality (Poor, Fair, Good, or Great)
         QualityConverter converter = new QualityConverter(qualityRequestDTO.getModelType());
-        String quality = converter.convertQuality(qualityValueAverage);
+        QualityType quality = converter.convertQuality(qualityValueAverage);
 
         // Update the quality channels
-        updateState(CHANNEL_QUALITY, new StringType(quality));
+        updateState(CHANNEL_QUALITY, new StringType(quality.toString()));
         updateState(CHANNEL_QUALITY_PERCENT, new DecimalType(qualityPercentAverage));
         updateState(CHANNEL_QUALITY_VALUE, new DecimalType(qualityValueAverage));
         logger.debug("Quality statistics: q={}; qPctAvg={}; qPctStdDev={}; qValAvg={}; qValStdDev={}", quality,

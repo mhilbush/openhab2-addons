@@ -10,21 +10,25 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.sunsetwx.internal.dto;
+package org.openhab.binding.sunsetwx.internal.model;
 
-import com.google.gson.annotations.SerializedName;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
- * The {@link DiscoveryLocationResponse} class is used to parse the response from the
- * location discovery API call.
+ * The {@link QualityType} defines the quality levels supported by the service
  *
  * @author Mark Hilbush - Initial contribution
  */
-public class DiscoveryLocationResponse {
+@NonNullByDefault
+public enum QualityType {
+    POOR("Poor"),
+    FAIR("Fair"),
+    GOOD("Good"),
+    GREAT("Great");
 
-    @SerializedName("lat")
-    public Double lat;
+    public final String label;
 
-    @SerializedName("lon")
-    public Double lon;
+    private QualityType(String label) {
+        this.label = label;
+    }
 }

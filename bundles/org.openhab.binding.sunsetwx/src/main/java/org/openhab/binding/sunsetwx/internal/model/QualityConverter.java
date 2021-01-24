@@ -40,26 +40,26 @@ public class QualityConverter {
         this.type = type;
     }
 
-    public String convertQuality(double qualityValue) {
+    public QualityType convertQuality(double qualityValue) {
         if (type.equals(ModelType.SUNRISE)) {
             if (qualityValue <= -223.0d) {
-                return "Poor";
+                return QualityType.POOR;
             } else if (qualityValue > -223.0d && qualityValue <= -40.0d) {
-                return "Fair";
+                return QualityType.FAIR;
             } else if (qualityValue > -40.0d && qualityValue <= 142.0d) {
-                return "Good";
+                return QualityType.GOOD;
             } else {
-                return "Great";
+                return QualityType.GREAT;
             }
         } else {
             if (qualityValue <= -262.75d) {
-                return "Poor";
+                return QualityType.POOR;
             } else if (qualityValue > -262.75d && qualityValue <= -75.0d) {
-                return "Fair";
+                return QualityType.FAIR;
             } else if (qualityValue > -75.0d && qualityValue <= 70.0d) {
-                return "Good";
+                return QualityType.GOOD;
             } else {
-                return "Great";
+                return QualityType.GREAT;
             }
         }
     }
