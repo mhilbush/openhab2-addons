@@ -68,6 +68,10 @@
 			<description>Password (if authentication enabled in ZoneMinder)</description>
 			<context>password</context>
 		</parameter>
+		<parameter name="commonName" type="text" required="false" groupName="auth-info">
+			<label>Certificate Common Name</label>
+			<description>If using SSL, this is the ZoneMinder server certificate's common name</description>
+		</parameter>
 	</config-description>
 
 	<config-description uri="thing-type:zoneminder:monitor">

@@ -28,6 +28,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -38,6 +40,7 @@ import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.http.HttpStatus;
 import org.openhab.binding.zoneminder.internal.ZmStateDescriptionOptionsProvider;
+import org.openhab.binding.zoneminder.internal.ZmTlsTrustManagerProvider;
 import org.openhab.binding.zoneminder.internal.config.ZmBridgeConfig;
 import org.openhab.binding.zoneminder.internal.discovery.MonitorDiscoveryService;
 import org.openhab.binding.zoneminder.internal.dto.EventDTO;
@@ -205,7 +208,14 @@ public class ZmBridgeHandler extends BaseBridgeHandler {
 
     @Override
     public Collection<Class<? extends ThingHandlerService>> getServices() {
-        return Collections.singleton(MonitorDiscoveryService.class);
+        return Collections.unmodifiableList(
+                Stream.of(MonitorDiscoveryService.class, ZmTlsTrustManagerProvider.class).collect(Collectors.toList()));
+    }
+
+    public String getCertificateCommonName() {
+        String commonName = getConfigAs(ZmBridgeConfig.class).commonName;
+        logger.debug("Bridge: getCertificateCommonName: commonName={}", commonName);
+        return commonName != null ? commonName : "zoneminder.server";
     }
 
     public boolean isBackgroundDiscoveryEnabled() {
@@ -566,17 +576,17 @@ public class ZmBridgeHandler extends BaseBridgeHandler {
     }
 
     private void scheduleRefreshJob() {
-        logger.debug("Bridge: Scheduling monitors refresh job");
         cancelRefreshJob();
+        logger.debug("Bridge: Scheduling monitors refresh job");
         refreshMonitorsJob = scheduler.scheduleWithFixedDelay(this::refreshMonitors,
                 MONITOR_REFRESH_STARTUP_DELAY_SECONDS, monitorRefreshInterval, TimeUnit.SECONDS);
     }
 
     private void cancelRefreshJob() {
-        Future<?> localRefreshThermostatsJob = refreshMonitorsJob;
-        if (localRefreshThermostatsJob != null) {
-            localRefreshThermostatsJob.cancel(true);
-            logger.debug("Bridge: Canceling monitors refresh job");
+        Future<?> localRefreshMonitorsJob = refreshMonitorsJob;
+        if (localRefreshMonitorsJob != null) {
+            localRefreshMonitorsJob.cancel(true);
+            logger.debug("Bridge: Canceled monitors refresh job");
             refreshMonitorsJob = null;
         }
     }

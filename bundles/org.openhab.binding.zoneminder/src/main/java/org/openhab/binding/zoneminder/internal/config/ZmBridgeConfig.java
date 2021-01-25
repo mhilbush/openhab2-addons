@@ -74,4 +74,9 @@ public class ZmBridgeConfig {
      * Zoneminder password
      */
     public @Nullable String pass;
+
+    /**
+     * Zoneminder server certificate Common Name
+     */
+    public @Nullable String commonName;
 }
