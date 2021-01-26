@@ -154,6 +154,12 @@ public class ZmBridgeHandler extends BaseBridgeHandler {
         if (config.user != null && config.pass != null) {
             zmAuth = new ZmAuth(this, config.user, config.pass);
         }
+        updateStatus(ThingStatus.OFFLINE);
+
+        scheduler.schedule(this::checkForValidHost, 3, TimeUnit.SECONDS);
+    }
+
+    private void checkForValidHost() {
         if (isHostValid()) {
             updateStatus(ThingStatus.ONLINE);
             scheduleRefreshJob();
