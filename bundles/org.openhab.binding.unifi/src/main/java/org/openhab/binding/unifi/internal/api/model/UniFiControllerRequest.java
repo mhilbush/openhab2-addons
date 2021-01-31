@@ -12,6 +12,9 @@
  */
 package org.openhab.binding.unifi.internal.api.model;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
@@ -31,6 +34,8 @@ import org.eclipse.jetty.client.HttpResponseException;
 import org.eclipse.jetty.client.api.ContentProvider;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.client.api.Response;
+import org.eclipse.jetty.client.util.InputStreamResponseListener;
 import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.http.HttpScheme;
@@ -113,7 +118,7 @@ public class UniFiControllerRequest<T> {
 
     public @Nullable T execute() throws UniFiException {
         T result = null;
-        String json = getContent();
+        String json = getContentAsString();
         // mgb: only try and unmarshall non-void result types
         if (!Void.class.equals(resultType)) {
             JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
@@ -126,35 +131,38 @@ public class UniFiControllerRequest<T> {
 
     // Private API
 
-    private String getContent() throws UniFiException {
+    private String getContentAsString() throws UniFiException {
         String content;
-        ContentResponse response = getContentResponse();
-        int status = response.getStatus();
-        switch (status) {
-            case HttpStatus.OK_200:
-                content = response.getContentAsString();
-                if (logger.isTraceEnabled()) {
-                    logger.trace("<< {} {} \n{}", status, HttpStatus.getMessage(status), prettyPrintJson(content));
-                }
-                break;
-            case HttpStatus.BAD_REQUEST_400:
-                throw new UniFiInvalidCredentialsException("Invalid Credentials");
-            case HttpStatus.UNAUTHORIZED_401:
-                throw new UniFiExpiredSessionException("Expired Credentials");
-            case HttpStatus.FORBIDDEN_403:
-                throw new UniFiNotAuthorizedException("Unauthorized Access");
-            default:
-                throw new UniFiException("Unknown HTTP status code " + status + " returned by the controller");
-        }
-        return content;
-    }
-
-    private ContentResponse getContentResponse() throws UniFiException {
         Request request = newRequest();
         logger.trace(">> {} {}", request.getMethod(), request.getURI());
-        ContentResponse response;
         try {
-            response = request.send();
+            InputStreamResponseListener listener = new InputStreamResponseListener();
+            request.send(listener);
+            Response response = listener.get(10, TimeUnit.SECONDS);
+            int status = response.getStatus();
+            switch (status) {
+                case HttpStatus.OK_200:
+                    ByteArrayOutputStream responseContent = new ByteArrayOutputStream();
+                    try (InputStream input = listener.getInputStream()) {
+                        input.transferTo(responseContent);
+                        content = new String(responseContent.toByteArray(), StandardCharsets.UTF_8.name());
+                        if (logger.isTraceEnabled()) {
+                            logger.trace("<< {} {} \n{}", status, HttpStatus.getMessage(status),
+                                    prettyPrintJson(content));
+                        }
+                    } catch (IOException e) {
+                        throw new UniFiException("IOException getting response from controller");
+                    }
+                    break;
+                case HttpStatus.BAD_REQUEST_400:
+                    throw new UniFiInvalidCredentialsException("Invalid Credentials");
+                case HttpStatus.UNAUTHORIZED_401:
+                    throw new UniFiExpiredSessionException("Expired Credentials");
+                case HttpStatus.FORBIDDEN_403:
+                    throw new UniFiNotAuthorizedException("Unauthorized Access");
+                default:
+                    throw new UniFiException("Unknown HTTP status code " + status + " returned by the controller");
+            }
         } catch (TimeoutException | InterruptedException e) {
             throw new UniFiCommunicationException(e);
         } catch (ExecutionException e) {
@@ -175,13 +183,13 @@ public class UniFiControllerRequest<T> {
                 // - it returns 401 UNAUTHORIZED without the WWW-Authenticate response header
                 // - this causes an ExceptionException to be thrown
                 // - we unwrap the response from the exception for proper handling of the 401 status code
-                response = (ContentResponse) ((HttpResponseException) cause).getResponse();
+                content = ((ContentResponse) ((HttpResponseException) cause).getResponse()).getContentAsString();
             } else {
                 // catch all
                 throw new UniFiException(cause);
             }
         }
-        return response;
+        return content;
     }
 
     private Request newRequest() {
