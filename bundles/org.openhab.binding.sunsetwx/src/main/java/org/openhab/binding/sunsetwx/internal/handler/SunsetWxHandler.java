@@ -61,7 +61,7 @@ public class SunsetWxHandler extends BaseThingHandler {
 
     private QualityRequestDTO qualityRequestDTO = new QualityRequestDTO();
 
-    private int configRefreshIntervalSeconds;
+    private int configRefreshIntervalMinutes;
 
     private @Nullable ScheduledFuture<?> updateQualityJob;
 
@@ -84,12 +84,12 @@ public class SunsetWxHandler extends BaseThingHandler {
         }
 
         SunsetWxConfig config = getConfigAs(SunsetWxConfig.class);
-        qualityRequestDTO.setCoordinates(config.geolocation);
+        qualityRequestDTO.setCoordinates(config.geoLocation);
         qualityRequestDTO.setLimit(config.limit);
         qualityRequestDTO.setRadius(config.radius);
         qualityRequestDTO.setLocation(config.location);
 
-        configRefreshIntervalSeconds = config.refreshIntervalMinutes * 60;
+        configRefreshIntervalMinutes = config.refreshIntervalMinutes;
 
         scheduleUpdateQualityJob();
         updateStatus(ThingStatus.ONLINE);
@@ -121,10 +121,10 @@ public class SunsetWxHandler extends BaseThingHandler {
 
     private void scheduleUpdateQualityJob() {
         logger.debug("Scheduling update {} quality job every {} minutes for {}", qualityRequestDTO.getModelType(),
-                configRefreshIntervalSeconds, getThing().getUID());
+                configRefreshIntervalMinutes, getThing().getUID());
         cancelUpdateQualityJob();
-        updateQualityJob = scheduler.scheduleWithFixedDelay(this::refreshQuality, 4L, configRefreshIntervalSeconds,
-                TimeUnit.SECONDS);
+        updateQualityJob = scheduler.scheduleWithFixedDelay(this::refreshQuality, 4L, configRefreshIntervalMinutes,
+                TimeUnit.MINUTES);
     }
 
     private void cancelUpdateQualityJob() {

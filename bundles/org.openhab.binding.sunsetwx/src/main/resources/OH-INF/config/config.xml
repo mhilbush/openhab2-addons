@@ -30,7 +30,7 @@
 		</parameter>
 		<parameter name="radius" type="decimal" required="true" min="1.0" max="100.0">
 			<label>Radius</label>
-			<description>Radius around the geolocation (in kilometers)</description>
+			<description>Radius around the geoLocation (in kilometers)</description>
 			<default>50.0</default>
 		</parameter>
 		<parameter name="limit" type="integer" required="true" min="1" max="250">
@@ -47,10 +47,10 @@
 				<option value="global">Global</option>
 			</options>
 		</parameter>
-		<parameter name="updateFrequency" type="integer" required="true" min="2" max="360">
-			<label>Update Frequency</label>
-			<description>Frequency to request quality updates from SunsetWx (in minutes)</description>
-			<default>20</default>
+		<parameter name="refreshIntervalMinutes" type="integer" required="true" min="10" max="360">
+			<label>Refresh Interval</label>
+			<description>Interval to request quality updates from SunsetWx (in minutes)</description>
+			<default>60</default>
 		</parameter>
 	</config-description>
 

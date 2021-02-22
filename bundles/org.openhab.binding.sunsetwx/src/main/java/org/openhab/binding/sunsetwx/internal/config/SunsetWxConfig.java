@@ -22,7 +22,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 @NonNullByDefault
 public class SunsetWxConfig {
 
-    public String geolocation = "-77.8600012,40.7933949";
+    public String geoLocation = "-77.8600012,40.7933949";
 
     /**
      * 1 to 100 kilometers
